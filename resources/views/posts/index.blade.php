@@ -16,7 +16,7 @@
     </div>
 
     <!-- Filter Form -->
-    <div class="bg-white rounded-xl border border-gray-200 shadow-xs p-4 sm:p-6">
+    <div class="bg-white rounded-xl border border-gray-200 shadow-xs p-4 sm:p-6 space-y-4">
         <form method="GET" action="{{ route('posts.index') }}" class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
             <div class="flex-1">
                 <input
@@ -28,7 +28,7 @@
                 >
             </div>
 
-            <div class="w-full sm:w-56">
+            <div class="w-full sm:w-48">
                 <select
                     name="category"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
@@ -42,6 +42,20 @@
                 </select>
             </div>
 
+            <div class="w-full sm:w-48">
+                <select
+                    name="tag"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                >
+                    <option value="">All Tags</option>
+                    @foreach ($tags as $t)
+                        <option value="{{ $t->name }}" {{ request('tag') === $t->name ? 'selected' : '' }}>
+                            {{ $t->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
             <div class="flex items-center gap-2">
                 <button
                     type="submit"
@@ -50,7 +64,7 @@
                     Filter
                 </button>
 
-                @if (request()->filled('q') || request()->filled('category'))
+                @if (request()->filled('q') || request()->filled('category') || request()->filled('tag'))
                     <a
                         href="{{ route('posts.index') }}"
                         class="w-full sm:w-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium text-center transition"
@@ -60,6 +74,16 @@
                 @endif
             </div>
         </form>
+
+        @if (request()->filled('tag'))
+            <div class="flex items-center gap-2 pt-2 border-t border-gray-100 text-xs text-gray-600">
+                <span>Filtering by tag:</span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 font-semibold">
+                    #{{ request('tag') }}
+                    <a href="{{ route('posts.index', request()->except('tag', 'page')) }}" class="text-blue-600 hover:text-blue-900 font-bold ml-1" title="Remove tag filter">&times;</a>
+                </span>
+            </div>
+        @endif
     </div>
 
     <!-- Posts Grid -->
@@ -87,8 +111,22 @@
                         </a>
                     </h2>
 
+                    <!-- Tags Badges -->
+                    @if ($post->tags->isNotEmpty())
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            @foreach ($post->tags as $tag)
+                                <a
+                                    href="{{ route('posts.index', array_merge(request()->query(), ['tag' => $tag->name, 'page' => 1])) }}"
+                                    class="inline-block px-2 py-0.5 text-xs font-medium rounded-md bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-700 transition"
+                                >
+                                    #{{ $tag->name }}
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+
                     <!-- Body Snippet -->
-                    <p class="text-gray-600 text-sm mt-2 line-clamp-3 leading-relaxed">
+                    <p class="text-gray-600 text-sm mt-3 line-clamp-3 leading-relaxed">
                         {{ Str::limit($post->body, 130) }}
                     </p>
                 </div>
@@ -96,14 +134,23 @@
                 <!-- Card Metadata Footer -->
                 <div class="mt-6 pt-4 border-t border-gray-100 text-xs text-gray-500 space-y-2">
                     <div class="flex items-center justify-between">
-                        <span>Author #{{ $post->author_id }}</span>
+                        <span>
+                            By <a href="{{ route('authors.show', $post->author->id) }}" class="font-medium text-gray-800 hover:text-blue-600 underline">
+                                {{ $post->author->name }}
+                            </a>
+                        </span>
                         <span>{{ $post->published_at ? $post->published_at->format('M d, Y') : 'Unpublished' }}</span>
                     </div>
 
                     <div class="flex items-center justify-between pt-1">
-                        <span class="inline-flex items-center gap-1 font-medium text-gray-600">
-                            👁️ {{ $post->views }} {{ Str::plural('view', $post->views) }}
-                        </span>
+                        <div class="flex items-center gap-3">
+                            <span class="inline-flex items-center gap-1 font-medium text-gray-600">
+                                👁️ {{ $post->views }} {{ Str::plural('view', $post->views) }}
+                            </span>
+                            <span class="inline-flex items-center gap-1 font-medium text-gray-600">
+                                💬 {{ $post->comments_count }} {{ Str::plural('comment', $post->comments_count) }}
+                            </span>
+                        </div>
 
                         <a href="{{ route('posts.show', $post->id) }}" class="text-blue-600 hover:text-blue-800 font-semibold text-xs inline-flex items-center gap-1">
                             Read full &rarr;

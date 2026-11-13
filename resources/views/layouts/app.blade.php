@@ -20,26 +20,31 @@
             </a>
         </div>
 
-        <!-- Auth Status & Links (if enabled) -->
+        <!-- Auth Status & Links -->
         <div class="flex items-center space-x-4 text-sm">
-            @if (Route::has('login'))
-                @auth
-                    <span class="text-gray-600">
-                        Hi, <strong class="text-gray-900">{{ auth()->user()->name }}</strong>
-                    </span>
-
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="text-red-500 hover:text-red-700 underline cursor-pointer">
-                            Logout
-                        </button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded font-medium transition">
-                        Sign in
+            @auth
+                @if (auth()->user()->author)
+                    <a href="{{ route('posts.create') }}" class="inline-flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg font-medium transition shadow-xs text-xs sm:text-sm">
+                        <span>+</span>
+                        <span>New Post</span>
                     </a>
-                @endauth
-            @endif
+                @endif
+
+                <span class="text-gray-600">
+                    Hi, <strong class="text-gray-900">{{ auth()->user()->name }}</strong>
+                </span>
+
+                <form method="POST" action="{{ route('logout') }}" class="inline">
+                    @csrf
+                    <button type="submit" class="text-red-500 hover:text-red-700 font-medium underline cursor-pointer">
+                        Logout
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg font-medium transition shadow-xs">
+                    Sign in
+                </a>
+            @endauth
         </div>
 
     </div>
@@ -47,6 +52,15 @@
 
 <!-- Page Content Container -->
 <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
+    @if (session('status'))
+        <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 flex items-center justify-between text-sm shadow-xs">
+            <div class="flex items-center gap-2">
+                <span>✅</span>
+                <span>{{ session('status') }}</span>
+            </div>
+        </div>
+    @endif
+
     @yield('content')
 </main>
 
