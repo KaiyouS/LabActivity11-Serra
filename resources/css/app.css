@@ -7,3 +7,10 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Material Symbols are loaded from Google Fonts in layouts/app.blade.php */
+.material-symbols-outlined {
+    line-height: 1;
+    vertical-align: middle;
+    user-select: none;
+}

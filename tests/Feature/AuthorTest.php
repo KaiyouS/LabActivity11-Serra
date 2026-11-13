@@ -69,7 +69,7 @@ class AuthorTest extends TestCase
         $response->assertSee('Kagawad');
         $response->assertSee('kagawad.serra@bulletin.test');
         $response->assertSee('3');
-        $response->assertSee('Comments Received');
+        $response->assertSee('comments received');
         $response->assertSee('First Published Post');
         $response->assertSee('Second Published Post');
     }

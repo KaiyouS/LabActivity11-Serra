@@ -4,72 +4,65 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Barangay Bulletin - Purok Serra')</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0..1,0&display=block">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col font-sans antialiased">
+<body class="bg-stone-100 text-stone-800 min-h-screen flex flex-col font-sans antialiased">
 
-<!-- Top Navigation Bar -->
-<nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-30">
-    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+<header class="bg-emerald-800 text-white">
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+        <a href="{{ route('posts.index') }}" class="flex items-center gap-2 font-semibold tracking-tight">
+            <x-icon name="campaign" :size="22" />
+            <span>Barangay Bulletin <span class="font-normal text-emerald-200">/ Purok Serra</span></span>
+        </a>
 
-        <!-- App Brand & Navigation Links -->
-        <div class="flex items-center space-x-6">
-            <a href="{{ route('posts.index') }}" class="text-xl font-bold text-blue-600 hover:text-blue-700 flex items-center gap-2">
-                <span>📢</span>
-                <span>Barangay Bulletin &ndash; Purok Serra</span>
-            </a>
-        </div>
-
-        <!-- Auth Status & Links -->
-        <div class="flex items-center space-x-4 text-sm">
+        <nav class="flex items-center gap-3 text-sm">
             @auth
                 @if (auth()->user()->author)
-                    <a href="{{ route('posts.create') }}" class="inline-flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg font-medium transition shadow-xs text-xs sm:text-sm">
-                        <span>+</span>
+                    <a href="{{ route('posts.create') }}" class="inline-flex items-center gap-1 bg-white text-emerald-800 hover:bg-emerald-50 px-3 py-1.5 rounded-md font-medium">
+                        <x-icon name="edit_square" />
                         <span>New Post</span>
                     </a>
                 @endif
 
-                <span class="text-gray-600">
-                    Hi, <strong class="text-gray-900">{{ auth()->user()->name }}</strong>
+                <span class="hidden sm:inline-flex items-center gap-1 text-emerald-100">
+                    <x-icon name="account_circle" />
+                    {{ auth()->user()->name }}
                 </span>
 
-                <form method="POST" action="{{ route('logout') }}" class="inline">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-red-500 hover:text-red-700 font-medium underline cursor-pointer">
-                        Logout
+                    <button type="submit" class="inline-flex items-center gap-1 text-emerald-100 hover:text-white cursor-pointer" title="Logout">
+                        <x-icon name="logout" />
+                        <span class="hidden sm:inline">Logout</span>
                     </button>
                 </form>
             @else
-                <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg font-medium transition shadow-xs">
-                    Sign in
+                <a href="{{ route('login') }}" class="inline-flex items-center gap-1 bg-white text-emerald-800 hover:bg-emerald-50 px-3 py-1.5 rounded-md font-medium">
+                    <x-icon name="login" />
+                    <span>Sign in</span>
                 </a>
             @endauth
-        </div>
-
+        </nav>
     </div>
-</nav>
+</header>
 
-<!-- Page Content Container -->
-<main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
+<main class="max-w-5xl mx-auto px-4 py-8 flex-1 w-full">
     @if (session('status'))
-        <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 flex items-center justify-between text-sm shadow-xs">
-            <div class="flex items-center gap-2">
-                <span>✅</span>
-                <span>{{ session('status') }}</span>
-            </div>
+        <div class="mb-6 px-4 py-3 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-2 text-sm">
+            <x-icon name="check_circle" />
+            <span>{{ session('status') }}</span>
         </div>
     @endif
 
     @yield('content')
 </main>
 
-<!-- Footer -->
-<footer class="mt-auto border-t border-gray-200 bg-white py-6 text-center text-sm text-gray-500">
-    <div class="max-w-6xl mx-auto px-4">
-        <p>&copy; {{ date('Y') }} Barangay Matina Crossing &mdash; Davao City. All rights reserved.</p>
-        <p class="text-xs text-gray-400 mt-1">Barangay Bulletin &bull; Purok Serra Online Information Desk</p>
-    </div>
+<footer class="border-t border-stone-200 py-5 text-center text-xs text-stone-500">
+    Barangay Matina Crossing, Davao City &middot; Purok Serra
 </footer>
 
 </body>
