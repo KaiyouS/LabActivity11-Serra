@@ -44,8 +44,10 @@ class PostController extends Controller
         return view('posts.index', compact('posts', 'categories', 'tags'));
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
+        abort_if(! $request->user()?->author, 403);
+
         $categories = [
             'Announcement',
             'Health',
@@ -91,7 +93,6 @@ class PostController extends Controller
         $post->load([
             'author',
             'tags',
-            'comments' => fn ($query) => $query->latest(),
             'comments.user',
         ]);
 

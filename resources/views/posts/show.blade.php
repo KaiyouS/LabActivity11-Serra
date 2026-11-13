@@ -146,7 +146,7 @@
 
         <!-- Comments List (Newest first) -->
         <div class="space-y-4 pt-2">
-            @forelse ($post->comments as $comment)
+            @forelse ($post->comments->sortByDesc('id') as $comment)
                 <div class="p-4 rounded-xl border border-gray-100 bg-gray-50/50 space-y-1.5">
                     <div class="flex items-center justify-between text-xs text-gray-500">
                         <span class="font-semibold text-gray-800 text-sm">
